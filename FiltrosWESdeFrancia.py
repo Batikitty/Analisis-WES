@@ -7,7 +7,7 @@ Utilidad: Filtrar las tablas de WES originadas a partir del pipeline de Francia
 import pandas as pd
 
 #Leer csv
-dt = pd.read_csv('/Users/manue/Downloads/COL1521.V4.2.csv', header=0)
+dt = pd.read_csv('/Volumes/lymphocytex/Documents/CSV JL 20190709/COL1533.V4.2.csv', header=0)
 
 #Filtrar por frecuencias menores o iguales al 100%
 dt['gnomADGenomes_AF'] = pd.to_numeric(dt['gnomADGenomes_AF'], errors = 'coerce')
@@ -22,7 +22,8 @@ fHet = dt['zygo'] == 'het'
 #fNoHet = dt['zygo'] != 'het'
 
 #Quitar regiones no codificantes
-fFun = (dt['function'] != 'intron') & (dt['function'] != 'nc_mirna') & (dt['function'] != 'synonymous')
+fFun = (dt['function'] != 'intron') & (dt['function'] != 'nc_mirna') & (dt['function'] != 'upstream') & (dt['function'] != 'utr_3') & (dt['function'] != 'utr_5') & (dt['function'] != 'downstream')
+#& (dt['function'] != 'synonymous') Se están dejando las sinónimas
 #fNoFun = (dt['function'] == 'intron') | (dt['function'] == 'nc_mirna')
 
 #Filtrar por GDI, ideal para quitar todo lo mayor a 15, entre el número es más alto más mutaciones hay en ese gen en gente sana
@@ -33,7 +34,7 @@ fGDIMen = dt['GDI'] <= 15.0
 
 #Quitar el MSC low porque no predice alto daño
 #fMSC = dt['MSC_99%_Pred'] != 'HIGH'
-fMSCHigh = dt['MSC_99%_Pred'] == 'HIGH'
+fMSCHigh = dt['MSC_99%_Pred'] != 'LOW' # Toco corregir porque en algunos habían espacios en blanco
 
 #¿está en la black list o no?
 #fBLy = dt['BL'] == 'yes'
@@ -83,9 +84,9 @@ t3 = dt[freqMen & fHet & fFun & fGDIMen  & fMSCHigh & fBLn & fDPMay & fNoPID & f
 t4 = dt[freqMen & fHet & fFun & fGDIMen  & fMSCHigh & fBLn & fDPMay & fNoPID & fNoPPID]
 
 #Cambiar nombre del archivo al antojo y ubicación
-export_csv = t1.to_csv (r'/Users/manue/Downloads/1521/HetPID.csv', index = None, header=True)
-export_csv = t3.to_csv (r'/Users/manue/Downloads/1521/HetPredictPID.csv', index = None, header=True)
-export_csv = t4.to_csv (r'/Users/manue/Downloads/1521/HetNoPredictPID.csv', index = None, header=True)
+export_csv = t1.to_csv (r'/Volumes/lymphocytex/Documents/Archivos LUCIA /Analisis IDP/HetPID.csv', index = None, header=True)
+export_csv = t3.to_csv (r'/Volumes/lymphocytex/Documents/Archivos LUCIA /Analisis IDP/HetPredictPID.csv', index = None, header=True)
+export_csv = t4.to_csv (r'/Volumes/lymphocytex/Documents/Archivos LUCIA /Analisis IDP/HetNoPredictPID.csv', index = None, header=True)
 
 def Carlos (dates):
     for x in dates:
